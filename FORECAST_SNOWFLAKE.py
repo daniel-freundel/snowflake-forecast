@@ -79,7 +79,7 @@ def setup_processor():
        cursor.execute('CREATE OR REPLACE DATABASE ' + PROCESSOR_DATABASE)
        cursor.execute('CREATE OR REPLACE SCHEMA ' + PROCESSOR_SCHEMA)
        cursor.execute('CREATE OR REPLACE STAGE ' + PROCESSOR_STAGE + ' url=\'' + PROCESSOR_S3 + '\' credentials=(aws_key_id=\'' + PROCESSOR_S3_PUBLIC_KEY + '\' aws_secret_key=\'' + PROCESSOR_S3_PRIVATE_KEY + '\')')
-       cursor.execute('CREATE OR REPLACE TABLE ' + PROCESSOR_TABLE + ' (date datetime, first_observation_date datetime, item_id string, last_observation_date datetime, mean float, p10 float, p50 float, p90 float)')
+       cursor.execute('CREATE OR REPLACE TABLE ' + PROCESSOR_TABLE + ' (date datetime, item_id string, first_observation_date datetime, last_observation_date datetime, mean float, p10 float, p50 float, p90 float)')
        cursor.execute('CREATE OR REPLACE SHARE FORECAST_RESULT_SHARE')
        cursor.execute('GRANT USAGE ON DATABASE ' + PROCESSOR_DATABASE + ' TO SHARE FORECAST_RESULT_SHARE')
        cursor.execute('GRANT USAGE ON SCHEMA ' + PROCESSOR_SCHEMA + ' TO SHARE FORECAST_RESULT_SHARE')
@@ -198,7 +198,7 @@ def load_data_snowflake():
        cursor = snowflake_connect(PROCESSOR_ACCOUNT, PROCESSOR_USER, PROCESSOR_PASSWORD, PROCESSOR_WAREHOUSE)
        cursor.execute('USE DATABASE ' + PROCESSOR_DATABASE)
        cursor.execute('USE SCHEMA ' + PROCESSOR_SCHEMA)
-       cursor.execute('COPY INTO ' + PROCESSOR_TABLE + ' FROM  @' + PROCESSOR_STAGE + '/output file_format=(skip_header=1)')
+       cursor.execute('COPY INTO ' + PROCESSOR_TABLE + ' FROM @' + PROCESSOR_STAGE + '/output file_format=(skip_header=1)')
 
 setup_owner()
 setup_processor()
